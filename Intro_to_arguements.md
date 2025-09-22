@@ -28,4 +28,4 @@ pwn.college{0QIImS4ZxISkMaewpecLRTxRgf7.QX3YjM1wCM4kjNzEzW}
 ```
 
 ### New Learnings
-I learnt what an arguement was, the difference between an arguement and a command and the structure of a shell command.
+I learnt what an arguement was, the difference between an arguement and a command, and the structure of a shell command.
