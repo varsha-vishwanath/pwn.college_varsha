@@ -527,3 +527,34 @@ Now it's your turn. I've hidden the flag in a random directory on the filesystem
 
 Several notes. First, there are other files named flag on the filesystem. Don't panic if the first one you try doesn't have the actual flag in it. Second, there're plenty of places in the filesystem that are not accessible to a normal user. These will cause find to generate errors, but you can ignore those; we won't hide the flag there! Finally, find can take a while; be patient!
 
+### Solve
+**Flag:** `pwn.college{Ym2n1lWKCWY5AKTtHydHjN1ZzxD.QXyMDO0wCM4kjNzEzW}`
+
+I first navigated to / in order to see what files were in the root. Then I searched each directory in / for anything that matched flag. /usr had two paths that matched. Then I explored each of those paths till I found the flag itself.
+
+```
+hacker@commands~finding-files:~$ cd /
+hacker@commands~finding-files:/$ ls
+bin   challenge  etc   lib    lib64   media  nix  proc  run   srv  tmp  var
+boot  dev        home  lib32  libx32  mnt    opt  root  sbin  sys  usr
+hacker@commands~finding-files:/$ find /lib -name flag
+hacker@commands~finding-files:/$ find /lib32 -name flag
+hacker@commands~finding-files:/$ find /lib64 -name flag
+hacker@commands~finding-files:/$ find /libx32 -name flag
+hacker@commands~finding-files:/$ find /usr -name flag
+/usr/local/lib/python3.8/dist-packages/pwnlib/flag
+/usr/share/javascript/mathjax/jax/output/SVG/fonts/Neo-Euler/Marks/Regular/flag
+hacker@commands~finding-files:/$ ls /usr/local/lib/python3.8/dist-packages/pwnlib/flag
+__init__.py  __pycache__  flag.py
+hacker@commands~finding-files:/$ ls /usr/share/javascript/mathjax/jax/output/SVG/fonts/Neo-Euler/Marks/Regular/flag
+/usr/share/javascript/mathjax/jax/output/SVG/fonts/Neo-Euler/Marks/Regular/flag
+hacker@commands~finding-files:/$ cat /usr/share/javascript/mathjax/jax/output/SVG/fonts/Neo-Euler/Marks/Regular/flag
+pwn.college{Ym2n1lWKCWY5AKTtHydHjN1ZzxD.QXyMDO0wCM4kjNzEzW}hacker@commands~finding-files:/$
+```
+
+### New Learnings
+I learned how to use find effectively to search large parts of the filesystem for a specific filename. I practiced scoping searches to likely directories (e.g. /usr, /lib, /home), ignoring permission errors, and then verifying candidates with ls and cat. I also learned to be patient with find on / and to explore multiple matches because many files can share the same name.
+
+
+
+## Symbolic Links
