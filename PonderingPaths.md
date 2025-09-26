@@ -157,7 +157,7 @@ However, the current working directory does matter for relative paths.
 * A relative path is any path that does not start at root (i.e., it does not start with /).
 * A relative path is interpreted relative to your current working directory (cwd).
 * Your cwd is the directory that your prompt is currently located at.
-* 
+  
 This means how you specify a particular file, depends on where the terminal prompt is located.
 
 Imagine we want to access some file located at /tmp/a/b/my_file.
@@ -165,7 +165,7 @@ Imagine we want to access some file located at /tmp/a/b/my_file.
 * If my cwd is /, then a relative path to the file is tmp/a/b/my_file.
 * If my cwd is /tmp, then a relative path to the file is a/b/my_file.
 * If my cwd is /tmp/a/b/c, then a relative path to the file is ../my_file. The .. refers to the parent directory.
-* 
+  
 Let's try it here! You'll need to run /challenge/run using a relative path while having a current working directory of /. For this level, I'll give you a hint. Your relative path starts with the letter c 😊
 
 ### Solve
@@ -185,4 +185,48 @@ This challenge taught me how relative paths work: they don’t start with / (the
 
 
 
-## Ecplicit relative paths, from /
+## Explicit relative paths, from /
+Previously, your relative path was "naked": it directly specified the directory to descend into from the current directory. In this level, we're going to explore more explicit relative paths.
+
+In most operating systems, including Linux, every directory has two implicit entries that you can reference in paths: . and ... The first, ., refers right to the same directory, so the following absolute paths are all identical to each other:
+
+* /challenge
+* /challenge/.
+* /challenge/./././././././././
+* /./././challenge/././
+  
+The following relative paths are also all identical to each other:
+
+* challenge
+* ./challenge
+* ./././challenge
+* challenge/.
+  
+Of course, if your current working directory is /, the above relative paths are equivalent to the above absolute paths.
+
+This challenge will get you using . in your relative paths. Get ready!
+
+### Solve
+**Flag:** `pwn.college{AuqZH9GiMptSTay1VzWJsJPk0oC.QXwUTN0wCM4kjNzEzW}`
+
+```
+hacker@paths~explicit-relative-paths-from-:~$ /challenge/run
+Incorrect...
+You are not currently in the / directory.
+Please use the `cd` utility to change directory appropriately.
+hacker@paths~explicit-relative-paths-from-:~$ cd /
+hacker@paths~explicit-relative-paths-from-:/$ challenge/run
+Incorrect...
+This challenge must be called with a relative path that explicitly starts with a `.`!
+hacker@paths~explicit-relative-paths-from-:/$ ./challenge/run
+Correct!!!
+./challenge/run is a relative path, invoked from the right directory!
+Here is your flag:
+pwn.college{AuqZH9GiMptSTay1VzWJsJPk0oC.QXwUTN0wCM4kjNzEzW}
+```
+
+### New Learnings
+I learned that . is a shortcut for the current directory. I was initially confused by this challenge, not because it was difficult, but because I didn’t understand why using . mattered compared to just a relative path. After looking it up, I understand that . is used for safety and organization: it explicitly runs the program in the cwd, which is predictable and avoids accidentally running a program elsewhere. This is especially important if . is not included in $PATH. I also learned that .. refers to the parent directory which one level above the cwd.
+
+### References 
+https://superuser.com/questions/153165/what-does-represent-while-giving-path#:~:text=.%2F%20does%20not%20begin,working%20directory.&text=Thus%2C%20we%20need%20to,working%20directory.&text=case%2C%20the%20operation%20is,working%20directory.&text=the%20current%20directory%2C%20if,working%20directory.
