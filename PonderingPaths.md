@@ -149,7 +149,7 @@ pwn.college{o_RGI9w3LW6LaZGdQpNpazRFyqK.QX4QTN0wCM4kjNzEzW}
 
 
 
-## Implicit relative paths, from /
+## Implicit Relative Paths, from /
 Now you're familiar with the concept of referring to absolute paths and changing directories. If you put in absolute paths everywhere, then it really doesn't matter what directory you are in, as you likely found out in the previous three challenges.
 
 However, the current working directory does matter for relative paths.
@@ -185,7 +185,7 @@ This challenge taught me how relative paths work: they don’t start with / (the
 
 
 
-## Explicit relative paths, from /
+## Explicit Relative Paths, from /
 Previously, your relative path was "naked": it directly specified the directory to descend into from the current directory. In this level, we're going to explore more explicit relative paths.
 
 In most operating systems, including Linux, every directory has two implicit entries that you can reference in paths: . and ... The first, ., refers right to the same directory, so the following absolute paths are all identical to each other:
@@ -230,3 +230,91 @@ I learned that . is a shortcut for the current directory. I was initially confus
 
 ### References 
 https://superuser.com/questions/153165/what-does-represent-while-giving-path#:~:text=.%2F%20does%20not%20begin,working%20directory.&text=Thus%2C%20we%20need%20to,working%20directory.&text=case%2C%20the%20operation%20is,working%20directory.&text=the%20current%20directory%2C%20if,working%20directory.
+
+
+
+## Implicit Relavtive Path
+In this level, we'll practice referring to paths using . a bit more. This challenge will need you to run it from the /challenge directory. Here, things get slightly tricky.
+
+Linux explicitly avoids automatically looking in the current directory when you provide a "naked" path. Consider the following:
+
+```
+hacker@dojo:~$ cd /challenge
+hacker@dojo:/challenge$ run
+```
+
+This will not invoke /challenge/run. This is actually a safety measure: if Linux searched the current directory for programs every time you entered a naked path, you could accidentally execute programs in your current directory that happened to have the same names as core system utilities! As a result, the above commands will yield the following error:
+```
+bash: run: command not found
+```
+We'll explore the mechanisms behind this concept later, but in this challenge, we'll learn how to explicitly use relative paths to launch run in this scenario. The way to do this is to tell Linux that you explicitly want to execute a program in the current directory, using . like in the previous levels. Give it a try now!
+
+### Solve
+**Flag:** `pwn.college{U10ouGfgRunUOOIskPua34-OJCo.QXxUTN0wCM4kjNzEzW}`
+
+```
+hacker@paths~implicit-relative-path:~$ cd /challenge
+hacker@paths~implicit-relative-path:/challenge$ ./run
+Correct!!!
+./run is a relative path, invoked from the right directory!
+Here is your flag:
+pwn.college{U10ouGfgRunUOOIskPua34-OJCo.QXxUTN0wCM4kjNzEzW}
+```
+
+### New Learnings
+This challenge cleared up my confusion about ./ from the previous challenge. I discovered that ./run explicitly runs the run program in the current directory; on the other hand, typing run alone won’t run ./run because the shell does not search the current directory by default. Prefixing commands with ./ is a safer, more predictable way to invoke local programs and avoids accidentally running a program from elsewhere.
+
+
+
+## Home Sweet Home
+Every user has a home directory, typically under /home in the filesystem. In the dojo, you are the hacker user, and your home directory is /home/hacker. The home directory is typically where users store most of their personal files. As you make your way through pwn.college, this is where you'll store most of your solutions.
+
+Typically, your shell session will start with your home directory as your current working directory. Consider the initial prompt:
+```
+hacker@dojo:~$
+```
+The ~ in this prompt is the current working directory, with ~ being shorthand for /home/hacker. Bash provides and uses this shorthand because, again, most of your time will be spent in your home directory. Thus, whenever bash sees ~ provided as the start of an argument in a way consistent with a path, it will expand it to your home directory. Consider:
+```
+hacker@dojo:~$ echo LOOK: ~
+LOOK: /home/hacker
+hacker@dojo:~$ cd /
+hacker@dojo:/$ cd ~
+hacker@dojo:~$ cd ~/asdf
+hacker@dojo:~/asdf$ cd ~/asdf
+hacker@dojo:~/asdf$ cd ~
+hacker@dojo:~$ cd /home/hacker/asdf
+hacker@dojo:~/asdf$
+```
+Note that the expansion of ~ is an absolute path, and only the leading ~ is expanded. This means, for example, that ~/~ will be expanded to /home/hacker/~ rather than /home/hacker/home/hacker.
+
+Fun fact: cd will use your home directory as the default destination:
+```
+hacker@dojo:~$ cd /tmp
+hacker@dojo:/tmp$ cd
+hacker@dojo:~$
+```
+Now it's your turn to play! In this challenge, /challenge/run will write a copy of the flag to any file you specify as an argument on the commandline, with these constraints:
+
+1. Your argument must be an absolute path.
+2. The path must be inside your home directory.
+3. Before expansion, your argument must be three characters or less.
+   
+Again, you must specify your path as an argument to /challenge/run as so:
+```
+hacker@dojo:~$ /challenge/run YOUR_PATH_HERE
+```
+
+### Solve
+**Flag:** `pwn.college{E4FpJVPQW4BhI_VO4mX_PWnIMhN.QXzMDO0wCM4kjNzEzW}`
+
+```
+hacker@paths~home-sweet-home:~$ /challenge/run /~
+The argument you provided is not under your home directory!
+hacker@paths~home-sweet-home:~$ /challenge/run ~/a
+Writing the file to /home/hacker/a!
+... and reading it back to you:
+pwn.college{E4FpJVPQW4BhI_VO4mX_PWnIMhN.QXzMDO0wCM4kjNzEzW}
+```
+
+### New Learnings
+I learned how ~ expands to my home directory and that /challenge/run can write the flag to an absolute path inside my home (e.g. /home/hacker/a), remembering the challenge required the argument to be ≤3 characters before expansion.
