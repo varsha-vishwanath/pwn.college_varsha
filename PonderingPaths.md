@@ -317,4 +317,4 @@ pwn.college{E4FpJVPQW4BhI_VO4mX_PWnIMhN.QXzMDO0wCM4kjNzEzW}
 ```
 
 ### New Learnings
-I learned how ~ expands to my home directory and that /challenge/run can write the flag to an absolute path inside my home (e.g. /home/hacker/a), remembering the challenge required the argument to be ≤3 characters before expansion.
+I learned how ~ expands to my home directory and that in this challenge, /challenge/run can write the flag to an absolute path inside my home (/home/hacker/a), remembering the challenge required the argument to be ≤3 characters before expansion.
