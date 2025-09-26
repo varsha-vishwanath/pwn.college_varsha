@@ -156,20 +156,153 @@ Now for your challenge! There are two files in /challenge:
 Use diff to find what's different between these files and get your flag!
 
 ### Solve
-**Flag:** `pwn.college{helloworld}`
+**Flag:** `pwn.college{M-ic5gAIIaSSNj_wsL33KZnLSEk.01MwMDOxwCM4kjNzEzW}`
 
-type in your solve and your thought process behind solving the challenge. Include as much as info as possible. Use triple ticks for any bash commands and output you type on the terminal.
+```
+hacker@commands~comparing-files:~$ diff /challenge/decoys_only.txt /challenge/decoys_and_real.txt
+9a10
+> pwn.college{M-ic5gAIIaSSNj_wsL33KZnLSEk.01MwMDOxwCM4kjNzEzW}
+```
 
-```bash
-command 1
-command 2
-pwn.college{helloworld}
+The output here tells us that after line 9 of decoys_only.txt, another line was added to get decoys_and_real.txt. This line was the flag
+
+### New Learnings
+I learnt that diff is an efficient way to find differences between two files. By running diff /challenge/decoys_only.txt /challenge/decoys_and_real.txt I could see exactly which line was added in the second file instead of manually scanning 100 lines.
+
+
+
+## Listing Files
+So far, we've told you which files to interact with. But directories can have lots of files (and other directories) inside them, and we won't always be here to tell you their names. You'll need to learn to list their contents using the ls command!
+
+ls will list files in all the directories provided to it as arguments, and in the current directory if no arguments are provided. Observe:
+```
+hacker@dojo:~$ ls /challenge
+run
+hacker@dojo:~$ ls
+Desktop    Downloads  Pictures  Templates
+Documents  Music      Public    Videos
+hacker@dojo:~$ ls /home/hacker
+Desktop    Downloads  Pictures  Templates
+Documents  Music      Public    Videos
+hacker@dojo:~$
+```
+In this challenge, we've named /challenge/run with some random name! List the files in /challenge to find it.
+
+## Solve
+**Flag:** `pwn.college{QX8RdKz-EbGzhmC1MEDh4wuhGmc.QX4IDO0wCM4kjNzEzW}`
+
+```
+hacker@commands~listing-files:~$ ls /challenge
+4684-renamed-run-21769  DESCRIPTION.md
+hacker@commands~listing-files:~$ /challenge/4684-renamed-run-21769
+Yahaha, you found me! Here is your flag:
+pwn.college{QX8RdKz-EbGzhmC1MEDh4wuhGmc.QX4IDO0wCM4kjNzEzW}
 ```
 
 ### New Learnings
-Brief note on what you learned from the challenge
-
-### References 
-Add any references or videos you used while solving the challenge.
+I learned that ls lists a directory’s contents and is the first tool to use when a file name isn’t given. By running ls /challenge I discovered the renamed binary 4684-renamed-run-21769 and executed it with its absolute path to get the flag.
 
 
+
+## Touching Files
+Of course, you can also create files! There are several ways to do this, but we'll look at a simple command here. You can create a new, blank file by touching it with the touch command:
+```
+hacker@dojo:~$ cd /tmp
+hacker@dojo:/tmp$ ls
+hacker@dojo:/tmp$ touch pwnfile
+hacker@dojo:/tmp$ ls
+pwnfile
+hacker@dojo:/tmp$
+```
+It's that simple! In this level, please create two files: /tmp/pwn and /tmp/college, and run /challenge/run to get your flag!
+
+## Solve
+**Flag:** `pwn.college{gd_HwrSN5pgJ8AkVfK8UB21lJS3.QXwMDO0wCM4kjNzEzW}`
+
+```
+hacker@commands~touching-files:~$ cd /tmp
+hacker@commands~touching-files:/tmp$ touch pwn
+hacker@commands~touching-files:/tmp$ ls
+bin  hsperfdata_root  pwn  tmp.TpSOPGOVKK
+hacker@commands~touching-files:/tmp$ touch college
+hacker@commands~touching-files:/tmp$ ls
+bin  college  hsperfdata_root  pwn  tmp.TpSOPGOVKK
+hacker@commands~touching-files:/tmp$ /challenge/run
+Success! Here is your flag:
+pwn.college{gd_HwrSN5pgJ8AkVfK8UB21lJS3.QXwMDO0wCM4kjNzEzW}
+```
+
+### New Learnings
+I learned how to create files with the touch command. touch pwn and touch college created the required empty files in /tmp, and the challenge binary then detected their presence and printed the flag. I also practiced verifying files with ls.
+
+## Removing Files
+Files are all around you. Like candy wrappers, there'll eventually be too many of them. In this level, we'll learn to clean up!
+
+In Linux, you remove files with the rm command, as so:
+```
+hacker@dojo:~$ touch PWN
+hacker@dojo:~$ touch COLLEGE
+hacker@dojo:~$ ls
+COLLEGE     PWN
+hacker@dojo:~$ rm PWN
+hacker@dojo:~$ ls
+COLLEGE
+hacker@dojo:~$
+```
+Let's practice. This challenge will create a delete_me file in your home directory! Delete it, then run /challenge/check, which will make sure you've deleted it and then give you the flag!
+
+### Solve
+**Flag:** `pwn.college{8BYtf29tpPlhNAZTLE8FLWMaNzh.QX2kDM1wCM4kjNzEzW}`
+
+```
+hacker@commands~removing-files:~$ ls
+a  delete_me
+hacker@commands~removing-files:~$ rm delete_me
+hacker@commands~removing-files:~$ ls
+a
+hacker@commands~removing-files:~$ /challenge/check
+Excellent removal. Here is your reward:
+pwn.college{8BYtf29tpPlhNAZTLE8FLWMaNzh.QX2kDM1wCM4kjNzEzW}
+```
+
+### New Learnings
+I learned how to use the rm command to delete files. By removing delete_me from my home directory, I satisfied the program’s check, which then rewarded me with the flag. I also reinforced the habit of verifying deletions with ls before and after using rm.
+
+
+
+## Moving Files
+You can also move files around with the mv command. The usage is simple:
+```
+hacker@dojo:~$ ls
+my-file
+hacker@dojo:~$ cat my-file
+PWN!
+hacker@dojo:~$ mv my-file your-file
+hacker@dojo:~$ ls
+your-file
+hacker@dojo:~$ cat your-file
+PWN!
+hacker@dojo:~$
+```
+This challenge wants you to move the /flag file into /tmp/hack-the-planet (do it)! When you're done, run /challenge/check, which will check things out and give the flag to you.
+
+### Solve
+**Flag:** `pwn.college{oqwUGbmPf9-5DgZgm_mwoAlgdIH.0VOxEzNxwCM4kjNzEzW}`
+
+```
+hacker@commands~moving-files:~$ mv /flag /tmp/hack-the-planet
+Correct! Performing 'mv /flag /tmp/hack-the-planet'.
+hacker@commands~moving-files:~$ /challenge/check
+Congrats! You successfully moved the flag to /tmp/hack-the-planet! Here it is:
+pwn.college{oqwUGbmPf9-5DgZgm_mwoAlgdIH.0VOxEzNxwCM4kjNzEzW}
+```
+
+### New Learnings
+I learned that the mv command can be used to both rename and move files and directories. If the arguement of the mv command is old_name new_name (as shown in the example), mv renames it. If the arguement is file_name new/file/path (as given in the challenge) then mv moves it as needed.
+
+### References
+https://www.w3schools.com/bash/bash_mv.php
+
+
+
+## Hidden files
