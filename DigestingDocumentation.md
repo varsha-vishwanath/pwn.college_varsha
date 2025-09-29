@@ -57,7 +57,7 @@ Correct argument! Here is the /home/hacker/not-the-flag file:
 pwn.college{kjo6Y2ntFFyjkSQRwnnzLHS29bd.QX1ITO0wCM4kjNzEzW}
 ```
 
-## New learnings
+### New learnings
 This challenge einforced the importance of reading usage docs closely. The program required a nested argument (--printfile <path>), meaning the --printfile option itself takes a path as its argument.
 
 
