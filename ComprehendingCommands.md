@@ -557,10 +557,6 @@ I learned how to use find effectively to search large parts of the filesystem fo
 
 
 
-## Symbolic Links
-
-
-
 ## Linking Files
 If you use Linux (or computers) for any reasonable length of time to do any real work, you will eventually run into some variant of the following situation: you want two programs to access the same data, but the programs expect that data to be in two different locations. Luckily, Linux provides a solution to this quandary: links.
 
