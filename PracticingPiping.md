@@ -444,7 +444,8 @@ pwn.college{I9uvxCGc3EXY9J9Xja7epYMUk4V.QXxITO0wCM4kjNzEzW}
 ### New Learnings
 I learned how tee acts like a T‑junction for pipes: it writes the piped data to one or more files and forwards the same data to the next command. I used tee to capture what /challenge/pwn produced (ch_output), discovered the required secret, then re‑ran pwn with the secret and piped it into /challenge/college to get the flag.
 
-
+### References
+I had to ask a friend in order to truly understand how tee works.
 
 ## Process Substitution for Input
 Sometimes you need to compare the output of two commands rather than two files. You might think to save each output to a file first:
@@ -652,5 +653,28 @@ This challenge will be a simple introduction to FIFOs. You'll need to create a /
 HINT: The blocking behavior of FIFOs makes it hard to solve this challenge in a single terminal. You may want to use the Desktop or VSCode mode for this challenge so that you can launch two terminals.
 
 ### Solve
-**Flag:** ``
+**Flag:** `pwn.college{gBnimE7EtiBLzw3IANtQHYtOFPf.01MzMDOxwCM4kjNzEzW}`
+
+In terminal 1:
+```
+hacker@piping~named-pipes:~$ mkfifo /tmp/flag_fifo
+hacker@piping~named-pipes:~$ /challenge/run >/tmp/flag_fifo
+You're successfully redirecting /challenge/run to a FIFO at /tmp/flag_fifo!
+Bash will now try to open the FIFO for writing, to pass it as the stdout of
+/challenge/run. Recall that operations on FIFOs will *block* until both the
+read side and the write side is open, so /challenge/run will not actually be
+launched until you start reading from the FIFO!
+```
+
+In terminal 2:
+```
+hacker@piping~named-pipes:~$ cat /tmp/flag_fifo
+You've correctly redirected /challenge/run's stdout to a FIFO at
+/tmp/flag_fifo! Here is your flag:
+pwn.college{gBnimE7EtiBLzw3IANtQHYtOFPf.01MzMDOxwCM4kjNzEzW}
+```
+
+### New Learnings
+I learned how to use FIFOs (named pipes). I created a FIFO with mkfifo /tmp/flag_fifo and redirected /challenge/run’s stdout into it; because FIFOs block until a reader opens the pipe, I used a second terminal to run cat /tmp/flag_fifo and read the flag.
+
 
