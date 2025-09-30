@@ -318,3 +318,107 @@ pwn.college{0YbyQhIMtKYp5gtka2HUtGp7Nci.QX5EDO0wCM4kjNzEzW}
 ```
 
 ### New Learnings
+I learned how to use the pipe (|) to connect one program’s stdout to another program’s stdin, letting me filter live output with grep instead of writing a huge file.
+
+
+
+## Grepping errors
+You know how to redirect errors to a file, and you know how to pipe output to another program, such as grep. But what if you wanted to grep through errors directly?
+
+The > operator redirects a given file descriptor to a file, and you've used 2> to redirect fd 2, which is standard error. The | operator redirects only standard output to another program, and there is no 2| form of the operator! It can only redirect standard output (file descriptor 1).
+
+Luckily, where there's a shell, there's a way!
+
+The shell has a >& operator, which redirects a file descriptor to another file descriptor. This means that we can have a two-step process to grep through errors: first, we redirect standard error to standard output (2>& 1) and then pipe the now-combined stderr and stdout as normal (|)!
+
+Try it now! Like the last level, this level will overwhelm you with output, but this time on standard error. grep through it to find the flag!
+
+### Solve
+**Flag:** `pwn.college{MRlF22sdGq9wD14GXbXKlKbBscX.QX1ATO0wCM4kjNzEzW}`
+
+```
+hacker@piping~grepping-errors:~$ 2 >& 1
+bash: 2: command not found
+hacker@piping~grepping-errors:~$ /challenge/run 2>&1 | grep pwn.college
+[INFO] WELCOME! This challenge makes the following asks of you:
+[INFO] - the challenge checks for a specific process at the other end of stderr : grep
+[INFO] - the challenge will output a reward file if all the tests pass : /challenge/.data.txt
+
+[HYPE] ONWARDS TO GREATNESS!
+
+[INFO] This challenge will perform a bunch of checks.
+[INFO] If you pass these checks, you will receive the /challenge/.data.txt file.
+
+[TEST] You should have redirected my stderr to another process. Checking...
+[TEST] Performing checks on that process!
+
+[INFO] The process' executable is /nix/store/8b4vn1iyn6kqiisjvlmv67d1c0p3j6wj-gnugrep-3.11/bin/grep.
+[INFO] This might be different than expected because of symbolic links (for example, from /usr/bin/python to /usr/bin/python3 to /usr/bin/python3.8).
+[INFO] To pass the checks, the executable must be grep.
+
+[PASS] You have passed the checks on the process on the other end of my stderr!
+[PASS] Success! You have satisfied all execution requirements.
+pwn.college{MRlF22sdGq9wD14GXbXKlKbBscX.QX1ATO0wCM4kjNzEzW}
+```
+
+### New Learnings
+I learned how to grep error output by first redirecting standard error (FD 2) into standard output (FD 1) with 2>&1, and then piping that combined stream into another program. The pattern /challenge/run 2>&1 | grep pwn.college lets you filter diagnostic or info messages (which come through stderr) just like normal stdout.
+
+
+
+## Filtering with grep -v
+The grep command has a very useful option: -v (invert match). While normal grep shows lines that MATCH a pattern, grep -v shows lines that do NOT match a pattern:
+```
+hacker@dojo:~$ cat data.txt
+hello hackers!
+hello world!
+hacker@dojo:~$ cat data.txt | grep -v world
+hello hackers!
+hacker@dojo:~$
+```
+Sometimes, the only way to filter to just the data you want is to filter out the data you don't want. In this challenge, /challenge/run will output the flag to stdout, but it will also output over 1000 decoy flags (containing the word DECOY somewhere in the flag) mixed in with the real flag. You'll need to filter out the decoys while keeping the real flag!
+
+Use grep -v to filter out all the lines containing "DECOY" and reveal the real flag!
+
+### Solve
+**Flag:** `pwn.college{E3cS0N6D5vwk8J9RWIWuRh6d3OY.0FOxEzNxwCM4kjNzEzW}`
+
+```
+Connected!
+hacker@piping~filtering-with-grep-v:~$ /challenge/run | grep -v DECOY
+pwn.college{E3cS0N6D5vwk8J9RWIWuRh6d3OY.0FOxEzNxwCM4kjNzEzW}
+```
+
+### New learnings
+I learned that grep -v string prints every line that does not match string. By piping /challenge/run into grep -v DECOY I removed thousands of decoy lines and revealed the single real flag.
+
+
+
+## Duplicating Piped Data with tee
+When you pipe data from one command to another, you of course no longer see it on your screen. This is not always desired: for example, you might want to see the data as it flows through between your commands to debug unintended outcomes (e.g., "why did that second command not work???").
+
+Luckily, there is a solution! The tee command, named after a "T-splitter" from plumbing pipes, duplicates data flowing through your pipes to any number of files provided on the command line. For example:
+```
+hacker@dojo:~$ echo hi | tee pwn college
+hi
+hacker@dojo:~$ cat pwn
+hi
+hacker@dojo:~$ cat college
+hi
+hacker@dojo:~$
+```
+As you can see, by providing two files to tee, we ended up with three copies of the piped-in data: one to stdout, one to the pwn file, and one to the college file. You can imagine how you might use this to debug things going haywire:
+```
+hacker@dojo:~$ command_1 | command_2
+Command 2 failed!
+hacker@dojo:~$ command_1 | tee cmd1_output | command_2
+Command 2 failed!
+hacker@dojo:~$ cat cmd1_output
+Command 1 failed: must pass --succeed!
+hacker@dojo:~$ command_1 --succeed | command_2
+Commands succeeded!
+```
+Now, you try it! This process' /challenge/pwn must be piped into /challenge/college, but you'll need to intercept the data to see what pwn needs from you!
+
+### Solve
+**Flag:** ``
