@@ -423,6 +423,8 @@ Now, you try it! This process' /challenge/pwn must be piped into /challenge/coll
 ### Solve
 **Flag:** `pwn.college{I9uvxCGc3EXY9J9Xja7epYMUk4V.QXxITO0wCM4kjNzEzW}`
 
+This challenge confused me for a bit as I didn't understand how tee worked exactly and needed to read the output that was fed into ch_output by tee rather than /challenge/pwn. After I understood that however, I was able to find the secret code by catting ch_output.
+
 ```
 hacker@piping~duplicating-piped-data-with-tee:~$ /challenge/pwn | tee ch_output | /challenge/college
 Processing...
